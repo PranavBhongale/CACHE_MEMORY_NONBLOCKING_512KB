@@ -1,0 +1,14 @@
+{
+  "label": "Build SystemC",
+  "type": "shell",
+  "command": "g++",
+  "args": [
+    "main.cpp",
+    "-I", "D:/SystemC/include",
+    "-L", "D:/SystemC/lib",
+    "-lsystemc",
+    "-o", "main.exe"
+  ],
+  "group": { "kind": "build", "isDefault": true }
+}
+
