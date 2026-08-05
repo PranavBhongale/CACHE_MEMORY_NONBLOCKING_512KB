@@ -25,16 +25,6 @@ set_target_properties(SystemC::systemc PROPERTIES
     IMPORTED_LOCATION "${SystemC_LIBRARY}"
     INTERFACE_INCLUDE_DIRECTORIES "${SystemC_INCLUDE_DIR}"
 )
-
-# IMPORTANT: most .cpp files under scripts/golden_model/ are NOT independent
-# translation units -- they're #include'd as text by other files in the
-# chain (mshr_table_interface.cpp includes mshr_table.cpp, l2_cache_top.cpp
-# includes the whole module chain, tb_l2_cache_top.cpp includes
-# l2_cache_top.cpp, and so on). Compiling them again as separate sources
-# duplicates every symbol and breaks the link ("multiple definition of ...").
-#
-# So: compile ONLY the actual entry point(s) that have sc_main / are meant
-# to be a standalone TU. Everything else is pulled in via #include.
 add_executable(DCACHE_NONBLOCKING
     scripts/l2_cache_perf_modeling/src/tb_l2_cache_top.cpp
 )

@@ -1,0 +1,57 @@
+[*]
+[*] GTKWave Analyzer v3.3.118 (w)1999-2023 BSI
+[*] Wed Jul 29 13:26:12 2026
+[*]
+[dumpfile] "C:\Users\Netizens\Documents\SV_Project\DCache_Nonblocking\wave.vcd"
+[dumpfile_mtime] "Wed Jul 29 13:18:20 2026"
+[dumpfile_size] 3566
+[savefile] "C:\Users\Netizens\Documents\SV_Project\DCache_Nonblocking\buffer.gtkw"
+[timestart] 174000
+[size] 1366 697
+[pos] -1 -1
+*-14.000000 182190 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] buffer_tb.
+[sst_width] 174
+[signals_width] 199
+[sst_expanded] 1
+[sst_vpaned_height] 191
+@28
+buffer_tb.dut.clk
+buffer_tb.dut.in_ready
+buffer_tb.dut.in_valid
+@24
+buffer_tb.dut.in_data[31:0]
+@28
+buffer_tb.dut.out_ready
+buffer_tb.dut.out_valid
+buffer_tb.dut.pop
+buffer_tb.dut.push
+buffer_tb.dut.wr_ptr[2:0]
+@22
+buffer_tb.dut.out_data[31:0]
+[color] 5
+buffer_tb.dut.mem[0][31:0]
+[color] 5
+buffer_tb.dut.mem[1][31:0]
+[color] 5
+buffer_tb.dut.mem[2][31:0]
+[color] 5
+buffer_tb.dut.mem[3][31:0]
+[color] 5
+buffer_tb.dut.mem[4][31:0]
+[color] 5
+buffer_tb.dut.mem[5][31:0]
+[color] 5
+buffer_tb.dut.mem[6][31:0]
+[color] 5
+buffer_tb.dut.mem[7][31:0]
+@28
+[color] 1
+buffer_tb.dut.out_ready
+[color] 1
+buffer_tb.dut.out_valid
+@23
+[color] 1
+buffer_tb.dut.out_data[31:0]
+[pattern_trace] 1
+[pattern_trace] 0

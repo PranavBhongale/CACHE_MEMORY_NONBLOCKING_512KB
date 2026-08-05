@@ -46,6 +46,8 @@ SC_MODULE(srrip_controller) {
     //  Process 
     void do_srrip();
 
+
+
     SC_CTOR(srrip_controller) {
         SC_METHOD(do_srrip);
         sensitive << clk.pos();
@@ -60,6 +62,8 @@ SC_MODULE(srrip_controller) {
                 rrpv_table[s][w] = RRPV_MAX;
     }
 };
+
+
 
 #endif
 

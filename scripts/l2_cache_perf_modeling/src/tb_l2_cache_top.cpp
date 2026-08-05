@@ -556,4 +556,3 @@ int sc_main(int argc, char* argv[]) {
     return g_errors == 0 ? 0 : 1;
 }
 
-

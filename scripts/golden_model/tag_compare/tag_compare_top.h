@@ -21,11 +21,8 @@
 
 #include <systemc.h>
 
-// ---- Must match tag_memory.h geometry ----
 static const unsigned TC_NUM_WAYS = 4;
-// INTEGRATION FIX: was 15 (matched tag_memory's old 32-bit-address
-// assumption). tag_memory.cpp now sizes its tag for the real 64-bit
-// address used on the L1/LLC interfaces, so this must match: 47 bits.
+
 static const unsigned TC_TAG_BITS = 47;   // keep in sync with TM_TAG_BITS
 
 SC_MODULE(tag_compare) {

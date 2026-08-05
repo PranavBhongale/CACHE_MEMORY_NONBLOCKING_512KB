@@ -27,6 +27,7 @@ struct l2_llc_req_t {
             && wdata==o.wdata && wmask==o.wmask;
     }
 };
+
 inline ostream& operator<<(ostream& os, const l2_llc_req_t& r) {
     os << "l2_llc_req(addr=" << r.addr.to_string(SC_HEX) << " tag=" << r.tag << ")";
     return os;
@@ -91,16 +92,6 @@ SC_MODULE(l2_llc_if) {
     sc_in<sc_biguint<LLC_LINE_BITS>> llc_resp_data;
     sc_in<bool>                llc_resp_error;
     sc_out<bool>               llc_resp_ready;
-
-
-    // Extension point: if LLC becomes shared across multiple cores,
-    // a probe channel goes here — LLC would drive an address + type
-    // (invalidate/downgrade) into this module, which forwards it to
-    // L2's tag-check logic and returns a probe ack/data on a
-    // dedicated response path. Deliberately not implemented for this
-    // single-core project; call it out explicitly in your design doc
-    // rather than leaving it silently absent.
-
 
     void forward_req() {
         if (!rst_n.read()) {

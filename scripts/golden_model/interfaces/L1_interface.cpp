@@ -47,7 +47,7 @@ struct l2_resp_t {
     resp_op_t                op;
     sc_uint<TAG_W>           tag;         // echoes the requester's tag
     bool                     sub_sel;     // which 32B half `data` corresponds to
-    sc_biguint<L2_LINE_BITS> data;        // full 64B line (refill installs both halves)
+    sc_biguint<L1_LINE_BITS> data;        // full 64B line (refill installs both halves)
     bool                     error;
 
     bool operator==(const l2_resp_t& o) const {
@@ -99,7 +99,7 @@ struct l2_if_resp_t {
     resp_op_t                op;
     sc_uint<GTAG_W>          gtag;
     bool                     sub_sel;
-    sc_biguint<L2_LINE_BITS> data;
+    sc_biguint<L1_LINE_BITS> data;
     bool                     error;
 
     l2_if_resp_t() : op(RESP_FILL), gtag(0), sub_sel(false), data(0), error(false) {}

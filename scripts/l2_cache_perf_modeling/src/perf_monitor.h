@@ -34,7 +34,6 @@ public:
         cur_cycle_ = cycle;
         maybe_sample();
     }
-
     // Call right after a CPU request's handshake completes (req accepted).
     void on_req_issued(unsigned gtag, uint64_t line_addr) {
         outstanding_[gtag] = Outstanding{line_addr, cur_cycle_, false};

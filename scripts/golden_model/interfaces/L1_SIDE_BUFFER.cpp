@@ -5,13 +5,11 @@ template<typename T, int DEPTH>
 SC_MODULE(sync_fifo)
 {
     sc_in<bool> clk;
-    sc_in<bool> rst_n;
-
+    sc_in<bool> rst_n;   
     // INPUT 
     sc_in<bool> in_valid;
     sc_in<T>    in_data;
     sc_out<bool> in_ready;
-
     // OUTPUT 
     sc_out<bool> out_valid;
     sc_out<T>    out_data;
@@ -61,9 +59,7 @@ public:
             if(rd_ptr == DEPTH)
                 rd_ptr = 0;
         }
-
         //  COUNT 
-
         if(push && !pop)
             count++;
 

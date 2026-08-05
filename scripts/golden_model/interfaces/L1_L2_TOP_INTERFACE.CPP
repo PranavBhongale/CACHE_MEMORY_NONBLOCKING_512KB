@@ -108,3 +108,4 @@ SC_MODULE(l1_l2_top) {
         delete resp_fifo;
     }
 };
+

@@ -4,7 +4,16 @@
 #include<iostream>
 
 void srrip_controller::do_srrip() {
-
+ //  some debugging
+ std::cout << "do_srrip() called at "
+          << sc_time_stamp() << std::endl;
+    std::cout << "--------------------------------\n";
+    std::cout << "Time = " << sc_time_stamp() << "\n";
+    std::cout << "req_valid = " << req_valid.read() << "\n";
+    std::cout << "index     = " << index.read() << "\n";
+    std::cout << "hit       = " << hit.read() << "\n";
+    std::cout << "hit_way   = " << hit_way.read() << "\n";
+    std::cout << "rst_n     = " << rst_n.read() << std::endl;
     //  synchronous reset 
     if (rst_n.read() == false) {
         for (unsigned s = 0; s < NUM_SETS; s++)
@@ -48,7 +57,6 @@ void srrip_controller::do_srrip() {
     }
 
     unsigned delta = RRPV_MAX - max_rrpv;      // 0 if some way already at MAX
-
     unsigned victim = 0;
     bool     found  = false;
 
@@ -67,4 +75,6 @@ void srrip_controller::do_srrip() {
 
     victim_way.write(victim);
     victim_valid.write(true);
+
+
 }
