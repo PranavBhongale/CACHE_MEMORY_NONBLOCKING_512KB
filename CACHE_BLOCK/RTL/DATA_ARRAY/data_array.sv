@@ -1,11 +1,9 @@
 `timescale 1ns/1ps
-
 module data_array #(
     parameter int CACHE_SETS = 2048,
     parameter int CACHE_WAYS = 4,
     parameter int LINE_BITS  = 512
 )(
-
     // Clock / Reset
     input  logic clk,
     input  logic rst_n,
@@ -74,7 +72,6 @@ module data_array #(
             dirty[wr_set][wr_way] <= wr_dirty;
 
         end
-
     end
-
 endmodule
+

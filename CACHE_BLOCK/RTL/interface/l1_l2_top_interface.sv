@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 
 
-module L1_L2_TOP_INTERFACE #(
+module l1_l2_top_interface #(
     parameter int ADDR_W        = 64,
     parameter int L1_LINE_BYTES = 32,
     parameter int L2_LINE_BYTES = 64,
@@ -127,7 +127,4 @@ module L1_L2_TOP_INTERFACE #(
         .out_ready(fifo_resp_ready)
     );
 
-
-
 endmodule
-

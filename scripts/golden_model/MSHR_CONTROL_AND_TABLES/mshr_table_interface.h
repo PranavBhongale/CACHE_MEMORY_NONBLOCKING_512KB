@@ -43,6 +43,7 @@ struct mshr_entry_t {
     sc_biguint<L1_LINE_BITS>   wdata;
     sc_uint<L1_LINE_BYTES>     wmask;
 
+    
     //  secondary (read-only) waiters merged in while this entry is in flight 
     unsigned                   num_sec;
     sc_uint<GTAG_W>            sec_gtag[MSHR_MAX_SEC];

@@ -58,7 +58,7 @@ module L1_interface #(
         if (rst_n) begin
 
             // Instruction Cache Wins
-            if (i_req.valid) begin
+            if (i_req.valid && l2_req_ready ) begin
 
                 l2_req_valid   = 1'b1;
 
@@ -74,7 +74,7 @@ module L1_interface #(
             end
 
             // Otherwise Data Cache
-            else if (d_req.valid) begin
+            else if (d_req.valid && l2_req_ready ) begin
 
                 l2_req_valid   = 1'b1;
 
@@ -104,7 +104,7 @@ module L1_interface #(
             if (l2_resp_valid) begin
 
                 // Source = D$
-                if (l2_resp.gtag[0]) begin
+                if (l2_resp.gtag[0] && d_resp_ready) begin
 
                     d_resp.valid   = 1'b1;
                     d_resp.op      = l2_resp.op;
@@ -114,25 +114,23 @@ module L1_interface #(
                     d_resp.error   = l2_resp.error;
 
                     l2_resp_ready  = d_resp_ready;
-
                 end
 
                 // Source = I$
                 else begin
+                    if(i_resp_ready) begin
+                        i_resp.valid   = 1'b1;
+                        i_resp.op      = l2_resp.op;
+                        i_resp.tag     = l2_resp.gtag[GTAG_W-1:1];
+                        i_resp.sub_sel = l2_resp.sub_sel;
+                        i_resp.data    = l2_resp.data;
+                        i_resp.error   = l2_resp.error;
 
-                    i_resp.valid   = 1'b1;
-                    i_resp.op      = l2_resp.op;
-                    i_resp.tag     = l2_resp.gtag[GTAG_W-1:1];
-                    i_resp.sub_sel = l2_resp.sub_sel;
-                    i_resp.data    = l2_resp.data;
-                    i_resp.error   = l2_resp.error;
-
-                    l2_resp_ready  = i_resp_ready;
-
+                        l2_resp_ready  = i_resp_ready;
+                    end
                 end
             end
         end
     end
 
 endmodule
-
