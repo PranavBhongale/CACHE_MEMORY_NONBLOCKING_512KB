@@ -190,7 +190,6 @@ void mshr_table::do_mshr() {
             mshr_entry_t &e = entries[i];
             if (e.valid && e.index == a_index && e.line_tag == a_tag) { match_idx = (int)i; break; }
         }
-
         if (match_idx >= 0) {
             mshr_entry_t &e = entries[(unsigned)match_idx];
             if (a_op == REQ_READ) {

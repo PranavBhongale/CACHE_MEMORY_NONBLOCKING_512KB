@@ -1,4 +1,6 @@
-package  pkg ;
+  `timescale 1ns/1ps
+
+  package  pkg ;
 
     parameter int ADDR_W        = 64;
     parameter int L1_LINE_BYTES = 32;
@@ -17,6 +19,10 @@ package  pkg ;
     parameter  int LLC_LINE_BITS  = LLC_LINE_BYTES * 8;   // 512
     parameter   int L2_MSHR_ENTRIES = 8;
     parameter   int LLC_TAG_W    = 3;
+    parameter int  TM_INDEX_BITS = 11;
+    parameter int TM_TAG_BITS = 47;
+    parameter int MSHR_MAX_SEC = 3 ;
+    parameter int NUM_WAYS = 4 ;
 
 
     typedef enum logic {
@@ -105,7 +111,7 @@ typedef enum logic [2:0] {
 typedef struct packed {
 
 logic valid ;
-mshr_entry_t state ;
+mshr_state_t current_state , next_state ;
 
 // identity of the line being installed
 
@@ -121,7 +127,7 @@ logic [LLC_LINE_BITS -1 : 0 ] wb_data;
 
 // primery requester the one  that cause the allocation
 
-logic [ GTAG -1 : 0 ] gtag ;
+logic [ GTAG_W -1 : 0 ] gtag ;
 req_op_t op ;
 logic sub_sel;
 logic [L1_LINE_BITS -1 : 0 ] wdata ;
@@ -129,17 +135,47 @@ logic [L1_LINE_BYTES -1 : 0 ] wmask ;
 
 // secondary request same request from different sourse
 logic [31 : 0 ] num_sec;
-logic [GTAG_W -1 : 0 ] sec_gtag[MSHR_MAX_SEC];
-logic sec_sub_sel[MSHR_MAX_SEC];
+logic [GTAG_W -1 : 0 ][MSHR_MAX_SEC-1 : 0 ]sec_gtag;
+logic [MSHR_MAX_SEC-1 : 0 ]sec_sub_sel;
 
 
-    //  fill result, latched when RESP_FILL arrives 
+    //  fill result, latched when RESP_FILL arrives
   logic [LLC_LINE_BITS -1  : 0 ]  fill_data;
   logic [2 : 0 ]resp_next ;
 
 } mshr_entry_t;
 
+ typedef enum  logic [3 : 0 ] {
+    GC_IDLE,          // waiting for / accepting a new request
+    GC_TAG_WAIT,      // tag_memory is capturing the index this edge
+    GC_COMPARE,       // tag_compare's hit/miss/hit_way are now valid
+    GC_DATA,          // (hit) data_array's read of hit_way is now valid
+    GC_RESPOND,        // (hit) driving the response, arbitrating vs. mshr
+    GC_VICTIM_WAIT,   // (miss) srrip_controller is capturing this edge
+    GC_VICTIM,        // (miss) victim_way/victim_valid now valid
+    GC_VICTIM_DATA,   // (miss) data_array's read of the victim way is valid
+    GC_ALLOC_WAIT,    // (miss) mshr_table is capturing alloc_req this edge
+    GC_ALLOC_CHECK    // (miss) alloc_ready/secondary_hit/conflict now valid
+}gc_state_t ;
 
+
+  typedef struct {
+    logic                     valid;
+    l2_if_req_t             req;
+    logic [TM_INDEX_BITS -1 : 0 ]  index;
+    logic [TM_TAG_BITS -1 : 0 ]    tag;
+
+    logic                     hit;
+    logic [1 : 0 ]               hit_way;
+    logic [TM_TAG_BITS -1 : 0 ]    way_tag[NUM_WAYS];
+    logic [NUM_WAYS -1 : 0 ]        way_valid_bits;
+
+    logic [1:0]               victim_way;
+    logic                      victim_valid;
+    logic                      need_wb;
+    logic [TM_TAG_BITS-1 : 0]     victim_tag;
+    logic [LLC_LINE_BYTES*8-1 : 0 ]    victim_data;
+
+    logic [LLC_LINE_BITS -1 : 0 ]    line_data;   // hit-path read result (merged, if a writeback hit)
+}gc_request_t;
 endpackage : pkg
-
-

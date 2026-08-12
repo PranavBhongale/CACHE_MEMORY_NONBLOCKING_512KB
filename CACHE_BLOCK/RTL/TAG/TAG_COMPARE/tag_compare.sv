@@ -3,7 +3,6 @@
 // not more than this
 
 module tag_compare  #(
-    parameter int TC_NUM_WAYS = 4,
     parameter int TC_TAG_BITS = 47
 )(
     input logic tag_valid,

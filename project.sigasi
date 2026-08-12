@@ -5,6 +5,7 @@
       "libraryMapping": {
         "": "work",
         "CACHE_BLOCK/RTL/MSHR_CONTROL_AND_TABLE/MSHR_PKG.svh": "work",
+        "CACHE_BLOCK/RTL/PKG": "work",
       },
     },
   },

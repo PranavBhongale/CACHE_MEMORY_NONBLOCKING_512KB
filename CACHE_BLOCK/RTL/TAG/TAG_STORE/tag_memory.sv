@@ -5,7 +5,6 @@
 module tag_memory #(
     parameter int TM_NUM_SETS = 2048,
     parameter int TM_NUM_WAYS = 4,
-    parameter int TM_TAG_BITS = 47 ,
     parameter int TM_INDEX_BITS = 11 ,
     parameter int TM_OFFSET_BITS = 6 ,
     parameter int TM_ADDR_BITS = 64 ,

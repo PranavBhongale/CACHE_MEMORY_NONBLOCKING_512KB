@@ -23,6 +23,7 @@ enum gc_state_t {
     GC_ALLOC_CHECK    // (miss) alloc_ready/secondary_hit/conflict now valid
 };
 
+
 struct gc_request_t {
     bool                    valid;
     l2_if_req_t             req;
@@ -138,6 +139,7 @@ SC_MODULE(global_control) {
     //  State 
     gc_state_t    state;
     gc_request_t  cur;
+
 
     //  Process 
     void do_control();
