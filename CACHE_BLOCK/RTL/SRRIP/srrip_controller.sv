@@ -17,6 +17,7 @@ module srrip_controller #(
     output logic                  victim_valid
 );
 
+
     localparam int RrpvBits = 2;
     localparam logic [RrpvBits-1:0] RrpvMax  = 2'd3;  // "distant"  (never used again soon)
     localparam logic [RrpvBits-1:0] RrpvLong = 2'd2;  // SRRIP insertion value (long re-ref interval)
@@ -28,6 +29,7 @@ module srrip_controller #(
     logic [RrpvBits-1:0] aged        [NUM_WAYS];   // this set's row after aging
     logic [WAY_BITS-1:0] victim_nxt;
     logic                found;
+
 
      always_comb begin
         max_rrpv   = '0;

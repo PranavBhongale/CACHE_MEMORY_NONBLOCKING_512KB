@@ -5,7 +5,7 @@
 module tag_compare  #(
     parameter int TC_TAG_BITS = 47
 )(
-    input logic tag_valid,
+    input logic [3:0]tag_valid,
     input logic [TC_TAG_BITS-1:0] req_tag,
     input logic [TC_TAG_BITS-1 : 0 ] tag_way0,
     input logic [TC_TAG_BITS-1 : 0 ] tag_way1,
@@ -21,17 +21,16 @@ always_comb begin : tag_compare
    hit = 0 ;
    hit_way = 0 ;
    miss = 0 ;
-   if(tag_valid) begin 
-     if(req_tag == tag_way0)begin
+     if((req_tag == tag_way0)&&tag_valid[0])begin
         hit = 1'b1;
         hit_way = 2'b00;
-     end else if( req_tag == tag_way1)begin
+     end else if( (req_tag == tag_way1)&&tag_valid[1])begin
         hit = 1'b1;
         hit_way = 2'b01;
-     end else if (req_tag == tag_way2 ) begin
+     end else if (req_tag == tag_way2 && tag_valid[2]) begin
         hit = 1'b1;
         hit_way = 2'b10;
-     end else if ( req_tag == tag_way3 ) begin
+     end else if ( req_tag == tag_way3 && tag_valid[3]) begin
         hit = 1'b1;
         hit_way = 2'b11;
      end else begin
@@ -39,6 +38,5 @@ always_comb begin : tag_compare
         hit = 1'b0;
      end
    end
-end
 
 endmodule

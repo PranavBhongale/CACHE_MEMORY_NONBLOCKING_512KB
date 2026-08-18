@@ -132,6 +132,7 @@ RTL_FILES_TOP = \
 		$(wildcard CACHE_BLOCK/RTL/TAG/TAG_STORE/*.sv) \
 		$(wildcard CACHE_BLOCK/RTL/TOP/*.sv) \
 		$(wildcard CACHE_BLOCK/RTL/GLOBAL_CONTROL/* .sv) \
+		CACHE_BLOCK/testbench/dummy_llc.sv \
 
 pkg = CACHE_BLOCK/RTL/PKG/pkg.sv
 
@@ -142,16 +143,19 @@ top_module:
 	verilator \
     --binary \
     --trace \
+	--threads 8 \
+	--build-jobs 8 \
 	$(pkg) \
     --top-module $(CACHE_TOP_TB)\
     $(RTL_FILES_TOP)\
     $(TB_FILE)
 
-run_cache_top: top_moule
+cache_run: top_module
 	./obj_dir/V$(CACHE_TOP_TB)
 
-clean_top:
+
+clean:
 	rm -rf obj_dir *.vcd
-
-
+wave :
+	gtkwave top.vcd  top_cache.gtkw 
 		

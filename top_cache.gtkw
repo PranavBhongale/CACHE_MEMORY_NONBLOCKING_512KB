@@ -1,0 +1,156 @@
+[*]
+[*] GTKWave Analyzer v3.3.118 (w)1999-2023 BSI
+[*] Sun Aug 16 03:53:37 2026
+[*]
+[dumpfile] "C:\Users\Netizens\Documents\SV_Project\DCache_Nonblocking\top.vcd"
+[dumpfile_mtime] "Sun Aug 16 03:40:22 2026"
+[dumpfile_size] 129149
+[savefile] "C:\Users\Netizens\Documents\SV_Project\DCache_Nonblocking\top_cache.gtkw"
+[timestart] 1042430
+[size] 1366 697
+[pos] -1 -1
+*-14.000000 1070520 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] cache_top_tb.
+[treeopen] cache_top_tb.dut.
+[treeopen] cache_top_tb.dut.global_control.
+[treeopen] cache_top_tb.dut.MSHR_CONTROL.
+[sst_width] 232
+[signals_width] 214
+[sst_expanded] 1
+[sst_vpaned_height] 191
+@28
+cache_top_tb.clk
+cache_top_tb.rst_n
+cache_top_tb.cpu_req_valid
+cache_top_tb.cpu_req_ready
+@2028
+[color] 1
+^1 C:\Users\Netizens\Documents\SV_Project\DCache_Nonblocking\global_state.txt
+cache_top_tb.dut.global_control.current_state[3:0]
+[color] 1
+^1 C:\Users\Netizens\Documents\SV_Project\DCache_Nonblocking\global_state.txt
+cache_top_tb.dut.global_control.next_state[3:0]
+^2 C:\Users\Netizens\Documents\SV_Project\DCache_Nonblocking\CACHE_BLOCK\RTL\MSHR_CONTROL_AND_TABLE\mshr_state.txt
+cache_top_tb.dut.MSHR_CONTROL.current_state[0][2:0]
+^2 C:\Users\Netizens\Documents\SV_Project\DCache_Nonblocking\CACHE_BLOCK\RTL\MSHR_CONTROL_AND_TABLE\mshr_state.txt
+cache_top_tb.dut.MSHR_CONTROL.current_state[1][2:0]
+^2 C:\Users\Netizens\Documents\SV_Project\DCache_Nonblocking\CACHE_BLOCK\RTL\MSHR_CONTROL_AND_TABLE\mshr_state.txt
+cache_top_tb.dut.MSHR_CONTROL.current_state[2][2:0]
+^2 C:\Users\Netizens\Documents\SV_Project\DCache_Nonblocking\CACHE_BLOCK\RTL\MSHR_CONTROL_AND_TABLE\mshr_state.txt
+cache_top_tb.dut.MSHR_CONTROL.current_state[3][2:0]
+^2 C:\Users\Netizens\Documents\SV_Project\DCache_Nonblocking\CACHE_BLOCK\RTL\MSHR_CONTROL_AND_TABLE\mshr_state.txt
+cache_top_tb.dut.MSHR_CONTROL.current_state[4][2:0]
+^2 C:\Users\Netizens\Documents\SV_Project\DCache_Nonblocking\CACHE_BLOCK\RTL\MSHR_CONTROL_AND_TABLE\mshr_state.txt
+cache_top_tb.dut.MSHR_CONTROL.current_state[5][2:0]
+^2 C:\Users\Netizens\Documents\SV_Project\DCache_Nonblocking\CACHE_BLOCK\RTL\MSHR_CONTROL_AND_TABLE\mshr_state.txt
+cache_top_tb.dut.MSHR_CONTROL.current_state[6][2:0]
+@28
+cache_top_tb.dut.mem_req_ready
+cache_top_tb.dut.mem_req_valid
+cache_top_tb.dut.mem_resp_ready
+@420
+cache_top_tb.dut.MSHR_CONTROL.match_idx[31:0]
+@22
+cache_top_tb.dut.MSHR_CONTROL.alloc_index[10:0]
+cache_top_tb.dut.MSHR_CONTROL.e_current[0].line_tag[46:0]
+cache_top_tb.dut.MSHR_CONTROL.e_current[0].index[10:0]
+@28
+cache_top_tb.dut.MSHR_CONTROL.have_free
+cache_top_tb.dut.MSHR_CONTROL.secondary_hit
+cache_top_tb.dut.MSHR_CONTROL.write_conflict
+cache_top_tb.dut.MSHR_CONTROL.alloc_op
+cache_top_tb.dut.global_control.mshr_resp_valid
+cache_top_tb.dut.MSHR_CONTROL.llc_resp_ready
+cache_top_tb.dut.MSHR_CONTROL.llc_req_valid
+cache_top_tb.dut.mem_resp_valid
+cache_top_tb.dut.MSHR_CONTROL.llc_resp_valid
+@22
+cache_top_tb.dut.cpu_resp[262:0]
+@28
+cache_top_tb.dut.cpu_resp_ready
+[color] 1
+cache_top_tb.dut.cpu_resp_valid
+[color] 1
+cache_top_tb.dut.MSHR_CONTROL.alloc_req
+cache_top_tb.dut.MSHR_CONTROL.resp_ready
+[color] 3
+cache_top_tb.dut.MSHR_CONTROL.resp_valid
+cache_top_tb.dut.MSHR_CONTROL.found
+cache_top_tb.dut.MSHR_CONTROL.e_current[0].valid
+[color] 7
+cache_top_tb.dut.tag_compare.hit
+cache_top_tb.dut.tag_compare.hit_way[1:0]
+@22
+cache_top_tb.dut.tag_memory.tag_valid[3:0]
+@28
+cache_top_tb.dut.tag_memory.tag_read_enable
+[color] 1
+cache_top_tb.dut.tag_memory.write_enable
+@22
+cache_top_tb.dut.tag_memory.write_tag[46:0]
+@420
+cache_top_tb.dut.MSHR_CONTROL.e_current[0].resp_next[2:0]
+@22
+[color] 2
+cache_top_tb.dut.tag_compare.req_tag[46:0]
+[color] 2
+cache_top_tb.dut.tag_compare.tag_valid[3:0]
+[color] 2
+cache_top_tb.dut.tag_compare.tag_way0[46:0]
+[color] 2
+cache_top_tb.dut.tag_compare.tag_way1[46:0]
+[color] 2
+cache_top_tb.dut.tag_compare.tag_way2[46:0]
+[color] 2
+cache_top_tb.dut.tag_compare.tag_way3[46:0]
+cache_top_tb.dut.global_control.tc_way_0[46:0]
+cache_top_tb.dut.global_control.tc_way_1[46:0]
+cache_top_tb.dut.global_control.tc_way_2[46:0]
+cache_top_tb.dut.global_control.tc_way_3[46:0]
+cache_top_tb.dut.global_control.tm_tag_way0[46:0]
+cache_top_tb.dut.global_control.tm_tag_way1[46:0]
+cache_top_tb.dut.global_control.cur_current.way_tag[0][46:0]
+@28
+[color] 3
+cache_top_tb.dut.data_array.rd_en
+@22
+[color] 3
+cache_top_tb.dut.data_array.rd_set[10:0]
+@28
+[color] 3
+cache_top_tb.dut.data_array.rd_valid
+[color] 3
+cache_top_tb.dut.data_array.rd_way[1:0]
+@22
+[color] 3
+cache_top_tb.dut.data_array.rd_data[511:0]
+cache_top_tb.dut.global_control.mshr_commit_data[511:0]
+cache_top_tb.dut.data_array.wr_data[511:0]
+@28
+cache_top_tb.dut.data_array.wr_dirty
+cache_top_tb.dut.data_array.wr_en
+@22
+cache_top_tb.dut.data_array.wr_set[10:0]
+@28
+cache_top_tb.dut.data_array.wr_way[1:0]
+cache_top_tb.dut.data_array.wr_valid
+cache_top_tb.dut.global_control.mshr_commit_valid
+@22
+cache_top_tb.dut.global_control.da_wr_data[511:0]
+@28
+[color] 5
+cache_top_tb.dummey_memory.mem_req_ready
+[color] 5
+cache_top_tb.dummey_memory.mem_req_valid
+@22
+[color] 5
+cache_top_tb.dummey_memory.mem_resp[517:0]
+@28
+[color] 5
+cache_top_tb.dummey_memory.mem_resp_ready
+[color] 5
+cache_top_tb.dummey_memory.mem_resp_valid
+@25
+cache_top_tb.dummey_memory.latency_count[31:0]
+[pattern_trace] 1
+[pattern_trace] 0

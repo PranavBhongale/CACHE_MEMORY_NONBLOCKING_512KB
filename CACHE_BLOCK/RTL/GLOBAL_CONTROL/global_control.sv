@@ -63,6 +63,11 @@ module global_control #(
     input logic                        tc_hit,
     input logic                        tc_miss,
     input logic [1:0]                  tc_hit_way,
+    output  logic  [TC_TAG_BITS-1:0]   tc_way_0 ,
+    output  logic  [TC_TAG_BITS-1:0]   tc_way_1 ,
+    output  logic  [TC_TAG_BITS-1:0]   tc_way_2 ,
+    output  logic  [TC_TAG_BITS-1:0]   tc_way_3 ,
+    output  logic [3:0]                 tag_valid,
 
     // SRRIP REPLACEMENT CONTROLLER
     output logic                       sr_req_valid,
@@ -127,23 +132,29 @@ module global_control #(
 
 );
 
+
+
 pkg :: gc_state_t current_state  , next_state  ;
 
-pkg :: gc_request_t cur ;
+pkg :: gc_request_t cur_current , cur_next ;
 always_ff @(posedge clk ) begin
 
     if(!rst_n) begin
         current_state <= pkg::  GC_IDLE;
+        cur_current <= '{default : 0 } ;
     end else
         current_state <= next_state;
+        cur_current <= cur_next  ;
 end
 
-
-
-int base = cur.req.sub_sel ? L1_LINE_BITS : 0;
+int base ;
+assign  base = cur_current.req.sub_sel ? L1_LINE_BITS : 0;
 always_comb begin
+///$monitor("l2_request_operation  = " , l2_req.op);
 
     // difault values  to avoid latch
+    cur_next = cur_current ;
+    next_state = pkg :: GC_IDLE;
     tm_read_enable = 0 ;
     tm_index = 0 ;
     tm_write_enable  = 0 ;
@@ -151,6 +162,8 @@ always_comb begin
     tm_tag_in = 0 ;
     tm_valid_in = 0 ;
 
+    mshr_alloc_wdata  = 0 ;
+    mshr_alloc_wmask = 0 ;
 
     // for SRRIP and data array ;
     sr_req_valid = 0 ;
@@ -167,11 +180,28 @@ always_comb begin
     da_wr_dirty = 0 ;
 
     mshr_alloc_req = 0 ;
-
+    mshr_alloc_index =  0 ;
+    mshr_alloc_gtag = 0 ;
+    mshr_alloc_op = pkg :: REQ_READ ;
+    mshr_alloc_sub_sel = 0 ;
+    mshr_alloc_tag = 0 ;
+    mshr_alloc_victim_data = 0 ;
+    mshr_alloc_way = 0;
+    mshr_alloc_victim_dirty = 0 ;
+    l2_resp_valid = 0 ;
+    l2_resp = 0 ;
+    l2_req_ready = 0 ;
+    mshr_alloc_victim_tag = 0 ;
+    tc_req_tag = 0 ;
+    tc_way_0 = 0 ;
+    tc_way_1 = 0 ;
+    tc_way_2 = 0 ;
+    tc_way_3 = 0 ;
+    tag_valid = 0;
+    sr_index = 0 ;
 
     if(!rst_n)begin
-     cur.valid = 1'b0 ;
-
+     cur_next.valid = 1'b0 ;
      l2_req_ready = 1'b0;
      l2_resp_valid = 0 ;
      l2_resp = '0;
@@ -219,70 +249,63 @@ always_comb begin
         da_wr_way = mshr_commit_way ;
         da_wr_data = mshr_commit_data ;
         da_wr_dirty = mshr_commit_dirty ;
+        da_wr_valid = 1;
       end
 
       //  responce arbitration ---
-
+      // here is the problem combinational loop
+      mshr_resp_ready = l2_resp_ready ;
       if(mshr_resp_valid)begin
         l2_resp_valid = 1 ;
         l2_resp = mshr_resp ;
-        mshr_resp_ready = l2_resp_ready ;
-      end else begin
-         mshr_resp_ready = 0 ;
       end
 
-
-
     //   MAIN FSM
-
    unique case (current_state)
-
-
        pkg ::  GC_IDLE : begin
               if(!mshr_commit_valid)begin
                  l2_req_ready = 1 ;
                  if(l2_req_valid)begin
-                    cur.valid = 1 ;
-                    cur.index = l2_req.addr[TM_INDEX_BITS + 5 :6] ;
-                    cur.tag = l2_req.addr[63: TM_INDEX_BITS + 6] ;
-
+                    cur_next.req = l2_req;
+                    cur_next.valid = 1 ;
+                    cur_next.index = l2_req.addr[TM_INDEX_BITS + 5 :6] ;
+                    cur_next.tag = l2_req.addr[63: TM_INDEX_BITS + 6] ;
                     tm_read_enable = 1 ;
                     tm_index = l2_req.addr[TM_INDEX_BITS + 5 :6] ;
-
+                    cur_next.way_tag[0] = tm_tag_way0;
+                    cur_next.way_tag[1] = tm_tag_way1;
+                    cur_next.way_tag[2] = tm_tag_way2;
+                    cur_next.way_tag[3] = tm_tag_way3;
+                    cur_next.way_valid_bits = tm_tag_valid;
                     // next state
-                    next_state = pkg::  GC_TAG_WAIT ;
+                    next_state = pkg::  GC_COMPARE ;
                  end
               end
         end
-       pkg :: GC_TAG_WAIT : begin
-        //   i will improve here there is extra state
-        // i thaught I will add pipelining so I add this state
-         // till now there is no any pipeling
-        next_state =  pkg :: GC_COMPARE ;
-       end
 
        pkg :: GC_COMPARE : begin
 
-        cur.hit = tc_hit ;
-        cur.hit_way = tc_hit_way ;
+          tc_way_0 = cur_current.way_tag[0];
+          tc_way_1 = cur_current.way_tag[1];
+          tc_way_2 = cur_current.way_tag[2];
+          tc_way_3 = cur_current.way_tag[3];
+          tc_req_tag = cur_current.tag;
+          tag_valid = cur_current.way_valid_bits ;
 
-        cur.way_tag[0] = tm_tag_way0;
-        cur.way_tag[1] = tm_tag_way1;
-        cur.way_tag[2] = tm_tag_way2;
-        cur.way_tag[3] = tm_tag_way3;
 
-        cur.way_valid_bits = tm_tag_valid;
+        cur_next.hit = tc_hit ;
+        cur_next.hit_way = tc_hit_way ;
 
         sr_req_valid = 1 ;
 
-        if(cur.hit) begin
+        if(tc_hit) begin
 
             sr_hit = 1 ;
-            sr_hit_way = cur.hit_way ;
+            sr_hit_way = tc_hit_way ;
 
             da_rd_en = 1 ;
-            da_rd_set = cur.index ;
-            da_rd_way = cur.hit_way ;
+            da_rd_set = cur_current.index ;
+            da_rd_way = cur_current.hit_way ;
 
 
             /// next state
@@ -291,34 +314,39 @@ always_comb begin
 
             sr_hit = 0 ;
             // next state ;
-            next_state = pkg :: GC_VICTIM_WAIT ;
+            next_state = pkg :: GC_VICTIM ;
         end
        end
 
 
        pkg :: GC_DATA : begin
 
-        if(cur.req.op == pkg :: REQ_WRITE_BACK) begin
+        if(cur_current.req.op == pkg :: REQ_WRITE_BACK) begin
             // merge the L1 writeback bytes into the current line and
             // write it straight back (write-hit, no LLC traffic needed).
-
             for (int  b = 0 ; b < L1_LINE_BYTES ;  b++) begin
-                if(cur.req.wmask) begin
-                        cur.req.wdata[b*8 +: 8] = da_rd_data[base + b*8 +: 8];
+                if(cur_current.req.wmask[b]) begin
+                        cur_next.req.wdata[b*8 +: 8] = da_rd_data[base + b*8 +: 8];
                 end
             end
 
             da_wr_en = 1 ;
-            da_wr_set = cur.index ;
-            da_wr_way = cur.hit_way ;
+            da_wr_set = cur_current.index ;
+            da_wr_way = cur_current.hit_way ;
             da_wr_data = da_rd_data ;
             da_wr_valid  = 1 ;
             da_wr_dirty = 1 ;
-
-            cur.line_data = da_rd_data ;
-
-            //next state 
+            //next state
             next_state = pkg ::  GC_RESPOND ;
+        end   else begin
+        // this is read request
+        da_rd_en = 1 ;
+        da_rd_set  = cur_current.index;
+        da_rd_way = cur_current.hit_way ;
+        cur_next.line_data = da_rd_data ;
+        $monitor("data from memory is " ,da_rd_data ) ;
+        next_state = pkg :: GC_RESPOND ;
+
         end
        end
 
@@ -326,16 +354,26 @@ always_comb begin
 
         if(!mshr_resp_valid) begin
 
-            l2_resp.op  = (cur.req.op == pkg :: REQ_WRITE_BACK ) ? pkg ::  RESP_WB_ACK  :  pkg ::  RESP_FILL;
-            l2_resp.gtag = cur.req.gtag ;
-            l2_resp.sub_sel = cur.req.sub_sel ;
-            l2_resp.data = cur.line_data ;
+          ///  $monitor("current operation is " , cur_current.req.op ) ;
+            if(cur_current.req.op == pkg :: REQ_WRITE_BACK ) begin
+            l2_resp.op  =  pkg ::  RESP_WB_ACK ;
+            l2_resp.gtag = cur_current.req.gtag ;
+            l2_resp.sub_sel = cur_current.req.sub_sel ;
+            l2_resp.data =  '0 ; //problem solved
             l2_resp.error = 0 ;
-
+            end else begin
+            l2_resp.op  =  pkg ::  RESP_FILL ;
+            l2_resp.gtag = cur_current.req.gtag ;
+            l2_resp.sub_sel = cur_current.req.sub_sel ;
+            if(cur_current.req.sub_sel)begin
+            l2_resp.data =   cur_current.line_data[511 : 256 ] ; //problem solved
+            end else  l2_resp.data =   cur_current.line_data[255 : 0 ] ; //problem solved
+            l2_resp.error = 0 ;
+            end
             l2_resp_valid = 1 ;
 
             if(l2_resp_ready) begin
-                cur.valid = 0 ;
+                cur_next.valid = 0 ;
                 next_state = pkg ::  GC_IDLE ;
             end
             /// else : L1 side is not ready --  we have to stay in respond side
@@ -343,19 +381,16 @@ always_comb begin
 
        end
 
-       pkg :: GC_VICTIM_WAIT : begin
-        next_state = pkg ::  GC_VICTIM ;
-       end
 
 
        pkg :: GC_VICTIM : begin
 
-        cur.victim_way = sr_victim_way ;
-        cur.victim_valid = sr_victim_valid ;
+        cur_next.victim_way = sr_victim_way ;
+        cur_next.victim_valid = sr_victim_valid ;
 
         da_rd_en = 1 ;
-        da_rd_set = cur.index ;
-        da_rd_way = cur.victim_way ;
+        da_rd_set = cur_current.index ;
+        da_rd_way = cur_current.victim_way ;
         next_state =  pkg :: GC_VICTIM_DATA ;
 
        end
@@ -363,32 +398,26 @@ always_comb begin
 
        pkg :: GC_VICTIM_DATA : begin
 
-        cur.need_wb = da_rd_valid && da_rd_dirty ;
-        cur.victim_tag = cur.way_tag[cur.victim_way] ;
-        cur.victim_data = da_rd_data;
-
-        mshr_alloc_req = 1 ;
+        cur_next.need_wb = da_rd_valid && da_rd_dirty ;
+        cur_next.victim_tag = cur_current.way_tag[cur_current.victim_way] ;
+        cur_next.victim_data = da_rd_data;
 
         next_state =  pkg :: GC_ALLOC_WAIT ;
        end
 
 
-       pkg :: GC_ALLOC_WAIT : begin 
+       pkg :: GC_ALLOC_WAIT : begin
         mshr_alloc_req = 1 ;
         next_state =   pkg :: GC_ALLOC_CHECK ;
        end
 
-
        pkg :: GC_ALLOC_CHECK : begin
 
         if(mshr_alloc_ready || mshr_alloc_secondary_hit )begin 
-            cur.valid = 0 ;
+            cur_next.valid = 0 ;
             next_state = pkg ::  GC_IDLE ;
         end else  begin
            // this is for back pressure
-
-           mshr_alloc_req = 1 ;
-
            next_state = pkg ::  GC_ALLOC_WAIT ;
         end
        end
@@ -402,23 +431,18 @@ always_comb begin
 
     endcase
 
-
-   //
    // assigning the cur to MSHR entries
-   assign mshr_alloc_index = cur.index ;
-   assign mshr_alloc_tag = cur.tag;
-   assign mshr_alloc_op = cur.req.op ;
-   assign mshr_alloc_way  = cur.victim_way ;
-   assign mshr_alloc_victim_dirty = cur.need_wb ;
-   assign mshr_alloc_victim_data = cur.victim_data ;
-   assign mshr_alloc_victim_tag = cur.victim_tag ;
-   assign mshr_alloc_gtag = cur.req.gtag ;
-   assign mshr_alloc_sub_sel = cur.req.sub_sel ;
-   assign mshr_alloc_wdata = cur.req.wdata ;
-   assign mshr_alloc_wmask = cur.req.wmask ;
-
-   
+   assign mshr_alloc_index = cur_current.index ;
+   assign mshr_alloc_tag = cur_current.tag;
+   assign mshr_alloc_op = cur_current.req.op ;
+   assign mshr_alloc_way  = cur_current.victim_way ;
+   assign mshr_alloc_victim_dirty = cur_current.need_wb ;
+   assign mshr_alloc_victim_data = cur_current.victim_data ;
+   assign mshr_alloc_victim_tag = cur_current.victim_tag ;
+   assign mshr_alloc_gtag = cur_current.req.gtag ;
+   assign mshr_alloc_sub_sel = cur_current.req.sub_sel ;
+   assign mshr_alloc_wdata = cur_current.req.wdata ;  // write operation can be miss
+   assign mshr_alloc_wmask = cur_current.req.wmask ;  // this is for that
     end
 end
-
 endmodule

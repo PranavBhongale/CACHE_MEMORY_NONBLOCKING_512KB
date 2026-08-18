@@ -79,6 +79,9 @@ typedef struct packed {
    logic error ;
 } l2_resp_t ;
 
+
+
+/// the bellow structure is for interfacing of the memory to L2
 typedef struct packed {
     req_op_t op ;
     logic [ADDR_W -1 :0 ] addr ;
@@ -108,10 +111,9 @@ typedef enum logic [2:0] {
     MSHR_RESP     // draining response (primary  , then secondary )  back to l1
 } mshr_state_t ;
 
-typedef struct packed {
+typedef struct  {
 
 logic valid ;
-mshr_state_t current_state , next_state ;
 
 // identity of the line being installed
 
@@ -134,8 +136,8 @@ logic [L1_LINE_BITS -1 : 0 ] wdata ;
 logic [L1_LINE_BYTES -1 : 0 ] wmask ;
 
 // secondary request same request from different sourse
-logic [31 : 0 ] num_sec;
-logic [GTAG_W -1 : 0 ][MSHR_MAX_SEC-1 : 0 ]sec_gtag;
+logic [2 : 0 ] num_sec;
+logic [GTAG_W -1 : 0 ]sec_gtag[MSHR_MAX_SEC];
 logic [MSHR_MAX_SEC-1 : 0 ]sec_sub_sel;
 
 
@@ -147,7 +149,6 @@ logic [MSHR_MAX_SEC-1 : 0 ]sec_sub_sel;
 
  typedef enum  logic [3 : 0 ] {
     GC_IDLE,          // waiting for / accepting a new request
-    GC_TAG_WAIT,      // tag_memory is capturing the index this edge
     GC_COMPARE,       // tag_compare's hit/miss/hit_way are now valid
     GC_DATA,          // (hit) data_array's read of hit_way is now valid
     GC_RESPOND,        // (hit) driving the response, arbitrating vs. mshr

@@ -143,6 +143,11 @@ logic                         w_commit_dirty;
  pkg :: l2_if_resp_t          w_mshr_resp;
  logic                         w_mshr_resp_ready;
 
+ logic  [TM_TAG_BITS-1:0] w_tc_way_0 ;
+ logic  [TM_TAG_BITS-1:0] w_tc_way_1 ;
+ logic  [TM_TAG_BITS-1:0] w_tc_way_2 ;
+ logic  [TM_TAG_BITS-1:0] w_tc_way_3 ;
+ logic [3:0] w_tc_valid  ;
 
  srrip_controller #(
        .NUM_SETS(NUM_SETS),
@@ -222,7 +227,7 @@ logic                         w_commit_dirty;
     // UPSTREAM RESPONSE
     .resp_valid(w_mshr_resp_valid),
     .resp(w_mshr_resp),
-    .resp_ready(w_mshr_resp_ready)
+    .resp_ready(w_mshr_resp_ready) // bug
 );
 
  global_control #(
@@ -288,6 +293,12 @@ logic                         w_commit_dirty;
     .tc_hit(w_tc_hit),
     .tc_miss(w_tc_miss),
     .tc_hit_way(w_tc_hit_way),
+    .tc_way_0 (w_tc_way_0),
+    .tc_way_1 (w_tc_way_1),
+    .tc_way_2 (w_tc_way_2),
+    .tc_way_3 (w_tc_way_3),
+    .tag_valid(w_tc_valid),
+
 
     // SRRIP REPLACEMENT CONTROLLER
     .sr_req_valid(w_sr_req_valid),
@@ -347,7 +358,7 @@ logic                         w_commit_dirty;
     // Global control arbitrates the response.
      .mshr_resp_valid(w_mshr_resp_valid),
      .mshr_resp(w_mshr_resp),
-     .mshr_resp_ready(w_mshr_resp_ready)
+     .mshr_resp_ready(w_mshr_resp_ready) //bug
 );
 
 
@@ -372,22 +383,22 @@ logic                         w_commit_dirty;
     // Write Port
      .wr_en(w_da_wr_en),
      .wr_set(w_da_wr_set),
-     .wr_way(w_da_rd_way),
+     .wr_way(w_da_wr_way),
 
-     .wr_data(w_da_rd_data),
-     .wr_valid(w_da_rd_valid),
-     .wr_dirty(w_da_rd_dirty)
+     .wr_data(w_da_wr_data),
+     .wr_valid(w_da_wr_valid),
+     .wr_dirty(w_da_wr_dirty)
 );
 
  tag_compare  #(
   .TC_TAG_BITS(TM_TAG_BITS)
 )tag_compare(
-     .tag_valid(w_tm_tag_valid),
+     .tag_valid(w_tc_valid),  //  here is the problem 
      .req_tag(w_tc_req_tag),
-     .tag_way0(w_tm_tag_way0),
-     .tag_way1(w_tm_tag_way1),
-     .tag_way2(w_tm_tag_way2),
-     .tag_way3(w_tm_tag_way3),
+     .tag_way0(w_tc_way_0),
+     .tag_way1(w_tc_way_1),
+     .tag_way2(w_tc_way_2),
+     .tag_way3(w_tc_way_3),
      .hit(w_tc_hit),
      .hit_way(w_tc_hit_way) ,
      .miss(w_tc_miss)
