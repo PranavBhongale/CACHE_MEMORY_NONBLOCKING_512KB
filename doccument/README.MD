@@ -1,3 +1,3 @@
-# all the information in given in PDF file which in it information folder
-there is table contents link are there but they are not working in GitHub if any one want to read they can dounload and open in adobe 
-there it will work
+All the information is provided in the PDF file located in the information folder.
+
+The table of contents contains links, but they do not work directly on GitHub. If you want to read the document with the links working properly, please download the PDF and open it in Adobe Acrobat Reader. The links will work there.
